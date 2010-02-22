@@ -1,0 +1,9 @@
+desc 'spawn bot'
+task :bot do
+    require 'bot_factory'
+    b = BotFactory.create
+    b.start
+end
+
+
+    

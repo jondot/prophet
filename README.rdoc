@@ -1,0 +1,29 @@
+= Prophet
+
+A Shoutbot alternative. Prophet asynchronously takes your messages (application side) and forwards them to different notifiers.
+Currently the only notifier type available is via IRC, and you can create as many IRC bots as you like via BotNotifier. Currently
+JabberNotifier and EmailNotifier are also in planning.
+
+You can add as many notifiers of different kinds to Pusher, as long as they expose a #notify protocol via DRb.
+
+== Dependencies
+
+The BotNotifier notifier depends on isaac (for IRC).
+	so for now,
+	$ gem install issac 
+
+== usage
+	simple:
+	
+	#spawn a sample bot
+	$ rake bot
+
+	#in your application
+	require 'prophet'
+	p = Prophet.new 'localhost:2099'
+	p.announce 'hello'
+
+== About
+
+ideas? <dotan@paracode.com>
+
