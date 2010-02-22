@@ -8,7 +8,7 @@ p = Prophet.new do
 	#not implemented yet
 	jabber 'localhost:2093' do
 		on :announce do
-			erb msg, :newmail
+			erb msg, :newmsg
 		end
 	end
 end
