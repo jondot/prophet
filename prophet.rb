@@ -84,30 +84,3 @@ end
 
 
 
-
-@p = Prophet.new do
-	bot 'localhost:2099' do
-		config :nick => 'botty_xyz', :server => 'irc.freenode.net', :channel=>'#botty'
-		on :announce do |msg|
-			msg.upcase
-		end
-	end
-	
-	#bot 'foo:2099' do
-	#	config :nick => 'foop', :server => 'irc.foo.net'
-	#	on :announce do
-	#		msg.upcase
-	#	end
-	#end
-	
-	#not implemented yet
-	#jabber 'localhost:2093' do
-	#	config :user => 'u', :password => 'p'
-	#	on :announce do
-	#		erb msg, :newmsg
-	#	end
-	#end
-end
-
-
-
