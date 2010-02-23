@@ -1,28 +1,69 @@
 = Prophet
 
-A Shoutbot alternative. Prophet asynchronously takes your messages (application side) and forwards them to different notifiers.
-Currently the only notifier type available is via IRC, and you can create as many IRC bots as you like via BotNotifier. Currently
-JabberNotifier and EmailNotifier are also in planning.
+A Shoutbot on steroids. Prophet asynchronously takes your messages (application side) and forwards them to different notifiers (endpoints).
+Currently the only endpoint type available is via IRC, and you can create as many IRC bots as you like via the configuraiont DSL.
 
-You can add as many notifiers of different kinds to Pusher, as long as they expose a #notify protocol via DRb.
+This work is still forming up, so beware of sharp edges.
+
+Prophet makes some assumptions on your directory structure in order to discover endpoint plugins:
+
+     + prophet.rb
+       + endpoints
+         + bot                   # this is the keyword you use in your configuration 'bot', 'jabber'
+           - bot_endpoint.rb     # must have Endpoint#create, that takes an options hash.
+         
+         
+The configuration DSL is much inspired from Sinatra and Isaac.
+
+Currently Jabber and Email are also in planning.
+
 
 == Dependencies
 
-The BotNotifier notifier depends on isaac (for IRC).
+The BotEndpoint notifier depends on isaac (for IRC).
 	so for now,
 	$ gem install issac 
 
 == usage
 	simple:
 	
-	#spawn a sample bot
-	$ rake bot
-
-	#in your application
-	require 'prophet'
-	p = Prophet.new 'localhost:2099'
-	p.announce 'hello'
-
+    #configure your endpoints. currently only irc (bot) is allowed
+    @p = Prophet.new do
+        bot 'localhost:2099' do
+            config :nick => 'botty_xyz', :server => 'irc.freenode.net', :channel=>'#botty'
+            on :announce do |msg|
+                msg.upcase
+            end
+        end
+        
+        #bot 'foo:2099' do
+        #	config :nick => 'foop', :server => 'irc.foo.net'
+        #	on :announce do
+        #		msg.upcase
+        #	end
+        #end
+        
+        #not implemented yet
+        #jabber 'localhost:2093' do
+        #	config :user => 'u', :password => 'p'
+        #	on :announce do
+        #		erb msg, :newmsg
+        #	end
+        #end
+    end
+    
+    
+    # spawn up endpoints
+    @p.up!
+    
+    # few minutes later
+    @p.connect!
+    
+    # in your application
+    @p.announce 'Hello, crewl world!'
+    
+    
+    
 == About
 
 ideas? <dotan@paracode.com>
