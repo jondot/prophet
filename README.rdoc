@@ -1,7 +1,6 @@
 = Prophet
 
-A Shoutbot on steroids. Prophet asynchronously takes your messages (application side) and forwards them to different notifiers (endpoints).
-Currently the only endpoint type available is via IRC, and you can create as many IRC bots as you like via the configuraiont DSL.
+Prophet is a low traffic runtime messaging framework (look at it as a Shoutbot on steroids). Prophet asynchronously takes your announcements (application side) and forwards them to different notifiers (endpoints). With Prophet you can make sure that your announcements are available via every channel available at once, at the convinience of your clients/users.
 
 This work is still forming up, so beware of sharp edges.
 
@@ -15,7 +14,7 @@ Prophet makes some assumptions on your directory structure in order to discover 
          
 The configuration DSL is much inspired from Sinatra and Isaac.
 
-Currently Jabber and Email are also in planning.
+Currently you can use Prophet over IRC and tweeter. Jabber and Email are also in planning.
 
 
 == Dependencies
@@ -24,6 +23,10 @@ The BotEndpoint notifier depends on isaac (for IRC).
 	so for now,
 	$ gem install issac 
 
+The TwitterEndpoint notifier depends on tweeter.
+    $ gem install tweeter
+
+    
 == usage
 	simple:
 	
@@ -35,6 +38,14 @@ The BotEndpoint notifier depends on isaac (for IRC).
                 msg.upcase
             end
         end
+        
+        twitter 'localhost:2098' do
+           config :user => 'tweety', :password => 'tweety!'
+           on :announce do |msg|
+               msg.downcase
+           end
+        end
+        
         
         #bot 'foo:2099' do
         #	config :nick => 'foop', :server => 'irc.foo.net'

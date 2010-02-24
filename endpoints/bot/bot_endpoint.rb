@@ -2,8 +2,10 @@ require 'drb'
 require 'isaac/bot'
 
 class BotEndpoint
-    def self.create(opts={})
-        Isaac::Bot.new do
+    def initialize(opts={})
+        @drb_uri = opts[:drb_uri] || 'localhost:2099'
+        
+        @bot = Isaac::Bot.new do
             configure do |c|
               c.nick = opts[:nick] || "gaius_b_#{rand(10).to_s}" 
               c.server = opts[:server] || 'irc.freenode.net'
@@ -13,12 +15,11 @@ class BotEndpoint
               c.version = opts[:version] || '1.0'
               @chan = opts[:channel] || '#bsg4evr'
               @online_quote = opts[:online_quote] || 'On behalf of the people of the Twelve Colonies, I surrender.'
-              @drb_uri = opts[:drb_uri] || 'localhost:2099'
+        
             end
              
             on :connect do
               join @chan
-              start_drb_service
               msg @chan, @online_quote
             end
              
@@ -30,11 +31,21 @@ class BotEndpoint
               msg @chan, message
             end
             
-            def start_drb_service
-              DRb.start_service("druby://#{@drb_uri}", self)
-            end
+
         end
+    end
     
+    def start_drb_service
+        DRb.start_service("druby://#{@drb_uri}", self)
+    end
+    
+    def announce(msg)
+        @bot.notify(msg)
+    end
+    
+    def start
+        start_drb_service
+        @bot.start
     end
 end
 

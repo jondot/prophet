@@ -1,4 +1,6 @@
 require 'pp'
+require 'drb'
+
 class Prophet
 
 	def initialize(&block)
@@ -14,11 +16,11 @@ class Prophet
     def up!
         @endpoints.each do |uri, cfg| 
             type = cfg.type.to_s
-
+            cfg.options[:drb_uri] = uri
             begin
                 require "endpoints/%s/%s_endpoint" % [type, type]
                 t = Thread.new do
-                    ep = Object.module_eval("::#{type.capitalize}Endpoint", __FILE__, __LINE__).create(cfg.options)
+                    ep = Object.module_eval("::#{type.capitalize}Endpoint", __FILE__, __LINE__).new(cfg.options)
                     ep.start
                 end
                 t.run
@@ -38,7 +40,7 @@ class Prophet
             loop do
                 s = @q.pop
                 @endpoints.each do |uri, cfg|
-                    cfg.live_endpoint.notify(cfg.events[:announce].call(s)) if cfg.live_endpoint.respond_to? :notify 
+                    cfg.live_endpoint.announce(cfg.events[:announce].call(s)) if cfg.live_endpoint.respond_to? :announce 
                 end
             end
         end
@@ -81,6 +83,4 @@ class EndpointConfig
 	end
 	
 end
-
-
 
