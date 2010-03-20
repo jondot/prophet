@@ -19,11 +19,8 @@ class Prophet
             cfg.options[:drb_uri] = uri
             begin
                 require "endpoints/%s/%s_endpoint" % [type, type]
-                t = Thread.new do
-                    ep = Object.module_eval("::#{type.capitalize}Endpoint", __FILE__, __LINE__).new(cfg.options)
-                    ep.start
-                end
-                t.run
+                ep = Object.module_eval("::#{type.capitalize}Endpoint", __FILE__, __LINE__).new(cfg.options)
+                ep.start
             rescue
                 print "Cannot initialize endpoint %s" % type
             end

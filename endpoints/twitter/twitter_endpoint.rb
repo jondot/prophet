@@ -20,8 +20,11 @@ class TwitterEndpoint
     end
     
     def start
-        httpauth = Twitter::HTTPAuth.new(@user, @password)
-        @client = Twitter::Base.new(httpauth)
-        start_drb_service
+        t = Thread.new do
+            httpauth = Twitter::HTTPAuth.new(@user, @password)
+            @client = Twitter::Base.new(httpauth)
+            start_drb_service
+        end
+        t.run
     end
 end

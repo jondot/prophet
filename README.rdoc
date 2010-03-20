@@ -25,7 +25,7 @@ The BotEndpoint notifier depends on isaac (for IRC).
 
 The TwitterEndpoint notifier depends on tweeter.
     $ gem install tweeter
-
+    on jruby, also: $ gem install jruby-openssl 
     
 == usage
 	simple:

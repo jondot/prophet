@@ -44,8 +44,11 @@ class BotEndpoint
     end
     
     def start
-        start_drb_service
-        @bot.start
+        t = Thread.new do
+            start_drb_service
+            @bot.start
+        end
+        t.run
     end
 end
 
