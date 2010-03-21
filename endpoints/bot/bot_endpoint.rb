@@ -1,14 +1,14 @@
-require 'drb'
 require 'isaac/bot'
+require 'bunny'
 
-class BotEndpoint
+class BotEndpoint < Endpoint
     def initialize(opts={})
-        @drb_uri = opts[:drb_uri] || 'localhost:2099'
+        @uri = opts[:uri] || 'default.botendpoint.com'
         
         @bot = Isaac::Bot.new do
             configure do |c|
               c.nick = opts[:nick] || "gaius_b_#{rand(10).to_s}" 
-              c.server = opts[:server] || 'irc.freenode.net'
+              c.server = opts[:server] || 'irc.inter.net.il'
               c.port = opts[:port] || 6667
               c.realname = opts[:realname] || 'Gaius Baltar'
               c.verbose = true
@@ -35,20 +35,16 @@ class BotEndpoint
         end
     end
     
-    def start_drb_service
-        DRb.start_service("druby://#{@drb_uri}", self)
-    end
-    
     def announce(msg)
         @bot.notify(msg)
     end
+ 
     
-    def start
-        t = Thread.new do
-            start_drb_service
+protected
+    def start_endpoint
+        Thread.new do
             @bot.start
         end
-        t.run
     end
 end
 

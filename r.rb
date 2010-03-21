@@ -1,15 +1,15 @@
  @p = Prophet.new do
-        #bot 'localhost:2099' do
-       #     config :nick => 'botty_xyz', :server => 'irc.freenode.net', :channel=>'#botty'
-        #    on :announce do |msg|
-        #        msg.upcase
-        #    end
-        #end
+        bot 'localhost:2099' do
+            config :nick => 'botty_xyz', :server => 'irc.freenode.net', :channel=>'#botty'
+            on :announce do |msg|
+                msg.upcase
+            end
+        end
 
         twitter 'foo:2099' do
                config :user => 'prophetrb', :password => 'prophetrb1234'
-               on :announce do
-                       msg.downcase
+               on :announce do |msg|
+                   msg.downcase
                end
         end
 
@@ -23,10 +23,10 @@
     end
 
     # spawn up endpoints
-    @p.up!
+    #@p.up!
 
     # few minutes later
-    @p.connect!
+    #@p.connect!
 
     # in your application
-    @p.announce 'Hello, crewl world!'
+    #@p.announce 'Hello, crewl world!'
