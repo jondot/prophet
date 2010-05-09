@@ -1,7 +1,5 @@
 # sudo gem install twitter
-
 require 'twitter'
-require 'bunny'
 
 class TwitterEndpoint < Endpoint
 

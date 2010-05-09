@@ -1,5 +1,16 @@
 = Prophet
 
+I'm slowly starting to develop a hard dependency on an AMQP provider, instead of custom DRb queue.
+- The advantage of AMQP is ability to deploy and scale cross organization.
+- The advantage of using DRb is pure rubyness and no other dependencies.
+
+The AMQP branch will be the master while i'll continue maintaining and synching the DRb based branch with
+lesser priority. Hopefully i'll abstract the queue out, and pull out a provider pattern when IAGNI (but for now, YAGNI).
+
+For AMQP, currently i use RabbitMQ and bunny.
+
+== Description
+
 Prophet is a low traffic runtime messaging framework (look at it as a Shoutbot on steroids). Prophet asynchronously takes your announcements (application side) and forwards them to different notifiers (endpoints). With Prophet you can make sure that your announcements are available via every channel available at once, at the convinience of your clients/users.
 
 This work is still forming up, so beware of sharp edges.
@@ -32,30 +43,28 @@ The TwitterEndpoint notifier depends on tweeter.
 	
     #configure your endpoints. currently only irc (bot) is allowed
     @p = Prophet.new do
-        bot 'localhost:2099' do
-            config :nick => 'botty_xyz', :server => 'irc.freenode.net', :channel=>'#botty'
+    
+        # cruise control IRC bot for prophecy v1.0 - dev channel
+        bot 'cruise.irc' do
+            config :nick => 'tom_cruise', :server => 'irc.freenode.net', :channel=>'#prophecy_v1'
             on :announce do |msg|
                 msg.upcase
             end
         end
         
-        twitter 'localhost:2098' do
-           config :user => 'tweety', :password => 'tweety!'
+        # breakers may listen to these tweets
+        twitter 'breakers' do
+           config :user => 'you_broke_my_build_dude', :password => 'tweety!'
            on :announce do |msg|
                msg.downcase
            end
         end
         
         
-        #bot 'foo:2099' do
-        #	config :nick => 'foop', :server => 'irc.foo.net'
-        #	on :announce do
-        #		msg.upcase
-        #	end
-        #end
         
         #not implemented yet
-        #jabber 'localhost:2093' do
+        # customer support 
+        #jabber 'support' do
         #	config :user => 'u', :password => 'p'
         #	on :announce do
         #		erb msg, :newmsg
@@ -64,16 +73,17 @@ The TwitterEndpoint notifier depends on tweeter.
     end
     
     
-    # spawn up endpoints
+    # spawn up endpoints if you want to.
     @p.up!
     
-    # few minutes later
-    @p.connect!
     
     # in your application
-    @p.announce 'Hello, crewl world!'
+    @p.announce 'Everyone, we are going to shutdown all VMs. Stay tuned.'
+    @p.announce :breakers, 'Someone broke the build again >=|'
+    @p.announce :support, 'v1.2, http://bit.ly/112'
     
-    
+    # not yet implemented
+    @p.msg :jondoe, 'dude, we need you ASAP. builder crashed!'
     
 == About
 

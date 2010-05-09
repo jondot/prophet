@@ -1,5 +1,4 @@
 require 'isaac/bot'
-require 'bunny'
 
 class BotEndpoint < Endpoint
     def initialize(opts={})
